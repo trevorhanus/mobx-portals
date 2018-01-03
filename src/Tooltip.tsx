@@ -12,18 +12,18 @@ export interface ITooltipProps extends IPopoverProps {
     content: string | JSX.Element;
     position?: TooltipPosition;
     delay?: number;
+    disable?: boolean;
 }
 
 export class Tooltip extends React.Component<ITooltipProps, {}> {
     private childRef: HTMLElement;
     private tooltipId: string;
-    private mouseIsOver: boolean;
+    private mouseleaveCallback: (e: Event) => void;
 
     constructor(props: ITooltipProps) {
         super(props);
         this.childRef = null;
         this.tooltipId = uuidv4();
-        this.mouseIsOver = false;
     }
 
     componentWillUnmount() {
@@ -36,7 +36,6 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
         const childProps = {
             ref: node => this.childRef = node,
             onMouseEnter: this.handleMouseEnter.bind(this),
-            onMouseLeave: this.handleMouseLeave.bind(this),
         };
 
         if (!React.isValidElement(children)) {
@@ -53,9 +52,10 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
     }
 
     showTooltip() {
-        if (!this.mouseIsOver) return;
+        if (this.props.disable) return;
+        
+        const { content, disable } = this.props;
 
-        const { content } = this.props;
         const position = isOr(this.props.position, 'bottom');
         const id = this.tooltipId;
         const tipClassName = classNames('mp-tooltip', tipArrowClassName(position));
@@ -77,13 +77,19 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
         }
     }
 
-    handleMouseEnter() {
-        this.mouseIsOver = true;
+    handleMouseEnter(e: React.MouseEvent<HTMLElement>) {
+        if (this.props.disable) return;
+        
+        // set up a 'mouseleave' event on target because React's onMouseLeave is unreliable
+        const target = e.currentTarget;
+        this.mouseleaveCallback = this.handleMouseLeave.bind(this);
+        target.addEventListener('mouseleave', this.mouseleaveCallback);
         this.showTooltip();
     }
 
-    handleMouseLeave() {
-        this.mouseIsOver = false;
+    handleMouseLeave(e: Event) {
+        e.target.removeEventListener('mouseleave', this.mouseleaveCallback);
+        this.mouseleaveCallback = null;
         this.closeTooltip();
     }
 }

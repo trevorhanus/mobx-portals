@@ -20,6 +20,18 @@ storiesOf('Tooltip', module)
         );
     })
 
+    .add('can disable', () => {
+
+        return (
+            <div>
+                <PopoversPortal />
+                <Tooltip content="This is a tip." disable={true}>
+                    <span>Hover Me, My Tooltip is Disabled</span>
+                </Tooltip>
+            </div>
+        );
+    })
+
     .add('warns when child is stateless', () => {
 
         const Stateless = () => {
