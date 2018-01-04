@@ -68,7 +68,7 @@ export function getPositionStyle(targetBBox: ClientRect, position?: TooltipPosit
             return style;
 
         default:
-            invariant(true, `unrecognized tooltip postiion ${pos}`);
+            invariant(true, `unrecognized tooltip position '${pos}'`);
     }
 }
 

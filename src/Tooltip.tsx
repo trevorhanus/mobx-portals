@@ -13,6 +13,7 @@ export interface ITooltipProps extends IPopoverProps {
     position?: TooltipPosition;
     delay?: number;
     disable?: boolean;
+    hideOnClick?: boolean;
 }
 
 export class Tooltip extends React.Component<ITooltipProps, {}> {
@@ -30,13 +31,14 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
         this.closeTooltip();
     }
 
+    componentWillReceiveProps(newProps: ITooltipProps) {
+        if (newProps.disable) {
+            this.closeTooltip();
+        }
+    }
+
     render() {
         const { children } = this.props;
-        
-        const childProps = {
-            ref: node => this.childRef = node,
-            onMouseEnter: this.handleMouseEnter.bind(this),
-        };
 
         if (!React.isValidElement(children)) {
             warn(`tooltips only work with valid elements`);
@@ -46,13 +48,19 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
             warn(`tooltips only work with valid elements`);
         }
 
+        const childProps = {
+            ref: node => this.childRef = node,
+            onMouseEnter: this.handleMouseEnter.bind(this),
+            onClick: this.handleClick.bind(this),
+        };
+
         return (
             React.cloneElement(React.Children.only(children), childProps)
         );
     }
 
     showTooltip() {
-        if (this.props.disable) return;
+        if (this.props.disable === true) return;
         
         const { content, disable } = this.props;
 
@@ -77,8 +85,21 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
         }
     }
 
+    handleClick(e: React.MouseEvent<any>) {
+        const hideOnClick = isOr(this.props.hideOnClick, true);
+        if (hideOnClick) {
+            this.closeTooltip();
+        }
+        // need to call the onClick handler on the children
+        const child = React.Children.only(this.props.children);
+        const onClick = child.props.onClick;
+        if (onClick != null) {
+            onClick(e);
+        }
+    }
+
     handleMouseEnter(e: React.MouseEvent<HTMLElement>) {
-        if (this.props.disable) return;
+        if (this.props.disable === true) return;
         
         // set up a 'mouseleave' event on target because React's onMouseLeave is unreliable
         const target = e.currentTarget;

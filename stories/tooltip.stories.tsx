@@ -66,6 +66,51 @@ storiesOf('Tooltip', module)
                 </HideChildrenOnSpace>
             </div>
         );
+    })
+
+    .add('hides when disabled prop is updated', () => {
+
+        return (
+            <div>
+                <PopoversPortal />
+                <DisableOnEnter />
+            </div>
+        );
+    })
+
+    .add('hides when target is clicked', () => {
+
+        return (
+            <div>
+                <PopoversPortal />
+
+                <div>hit 'Return' to show and hide the button</div>
+                <div>the tooltip should unmount as the button does</div>
+
+                <HideChildrenOnSpace>
+                    <Tooltip content="This is a tip." hideOnClick={true}>
+                        <button>Hover Me</button>
+                    </Tooltip>
+                </HideChildrenOnSpace>
+            </div>
+        );
+    })
+    
+    .add('still calls targets onClick handler', () => {
+
+        return (
+            <div>
+                <PopoversPortal />
+
+                <div>This button logs onClick. Clicking it should hide the toolitp and log an action.</div>
+
+                <HideChildrenOnSpace>
+                    <Tooltip content="This is a tip." hideOnClick={true}>
+                        <button onClick={action('clicked')}>Click Me</button>
+                    </Tooltip>
+                </HideChildrenOnSpace>
+            </div>
+        );
     });
 
 class HideChildrenOnSpace extends React.Component<{}, {show: boolean}> {
@@ -97,6 +142,42 @@ class HideChildrenOnSpace extends React.Component<{}, {show: boolean}> {
         if (e.keyCode === 13) {
             this.setState({
                 show: !this.state.show,
+            });
+        }
+    }
+}
+
+class DisableOnEnter extends React.Component<{}, {disable: boolean}> {
+    private handleKeydownCallback: () => void;
+
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            disable: false,
+        }
+    }
+
+    componentWillMount() {
+        this.handleKeydownCallback = this.handleKeydown.bind(this);
+        window.addEventListener('keydown', this.handleKeydownCallback);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.handleKeydownCallback);
+    }
+
+    render() {
+        return (
+            <Tooltip disable={this.state.disable} content="I'm a tip">
+                <button>Hover Me</button>
+            </Tooltip>
+        );
+    }
+
+    private handleKeydown(e: React.KeyboardEvent<any>) {
+        if (e.keyCode === 13) {
+            this.setState({
+                disable: !this.state.disable,
             });
         }
     }
