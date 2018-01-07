@@ -5,3 +5,17 @@
     background-color: black;
     opacity: .9;
 }
+
+.sb-center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.story-hint {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 250px;
+}

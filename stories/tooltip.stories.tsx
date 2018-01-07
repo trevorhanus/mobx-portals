@@ -11,7 +11,7 @@ storiesOf('Tooltip', module)
     .add('default (bottom)', () => {
 
         return (
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
                 <Tooltip content="This is a tip.">
                     <span>Hover Me</span>
@@ -20,10 +20,31 @@ storiesOf('Tooltip', module)
         );
     })
 
+    .add('positions', () => {
+
+        return (
+            <div className="sb-center-content">
+                <PopoversPortal />
+                <Tooltip content="This is a tip.">
+                    <span style={{marginRight: '2em'}}>Bottom</span>
+                </Tooltip>
+                <Tooltip content="This is a tip." position="right">
+                    <span style={{marginRight: '2em'}}>Right</span>
+                </Tooltip>
+                <Tooltip content="This is a tip." position="top">
+                    <span style={{marginRight: '2em'}}>Top</span>
+                </Tooltip>
+                <Tooltip content="This is a tip." position="left">
+                    <span>Left</span>
+                </Tooltip>
+            </div>
+        );
+    })
+
     .add('can disable', () => {
 
         return (
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
                 <Tooltip content="This is a tip." disable={true}>
                     <span>Hover Me, My Tooltip is Disabled</span>
@@ -39,9 +60,9 @@ storiesOf('Tooltip', module)
         };
 
         return (
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
-                <div>You should see a warning in the console.</div>
+                <div className="story-hint">You should see a warning in the console.</div>
                 <Tooltip content="This is a tip.">
                     <Stateless />
                 </Tooltip>
@@ -53,11 +74,14 @@ storiesOf('Tooltip', module)
 
         return (
             
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
 
-                <div>hit 'Return' to show and hide the button</div>
-                <div>the tooltip should unmount as the button does</div>
+                <div className="story-hint">
+                    hit 'Return' to show and hide the button
+                    <br />
+                    the tooltip should unmount as the button does
+                </div>
 
                 <HideChildrenOnSpace>
                     <Tooltip content="This is a tip.">
@@ -71,7 +95,7 @@ storiesOf('Tooltip', module)
     .add('hides when disabled prop is updated', () => {
 
         return (
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
                 <DisableOnEnter />
             </div>
@@ -81,11 +105,10 @@ storiesOf('Tooltip', module)
     .add('hides when target is clicked', () => {
 
         return (
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
 
-                <div>hit 'Return' to show and hide the button</div>
-                <div>the tooltip should unmount as the button does</div>
+                <div className="story-hint">Click the button, the tooltip should hide.</div>
 
                 <HideChildrenOnSpace>
                     <Tooltip content="This is a tip." hideOnClick={true}>
@@ -99,7 +122,7 @@ storiesOf('Tooltip', module)
     .add('still calls targets onClick handler', () => {
 
         return (
-            <div>
+            <div className="sb-center-content">
                 <PopoversPortal />
 
                 <div>This button logs onClick. Clicking it should hide the toolitp and log an action.</div>

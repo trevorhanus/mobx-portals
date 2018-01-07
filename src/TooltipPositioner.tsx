@@ -67,6 +67,12 @@ export function getPositionStyle(targetBBox: ClientRect, position?: TooltipPosit
             style.left = (left + width / 2);
             return style;
 
+        case 'left':
+            style.top = (top + height / 2);
+            style.left = left - 10;
+            style.transform = `translateX(-100%)`;
+            return style;
+
         default:
             invariant(true, `unrecognized tooltip position '${pos}'`);
     }
