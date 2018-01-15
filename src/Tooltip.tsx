@@ -14,6 +14,7 @@ export interface ITooltipProps extends IPopoverProps {
     delay?: number;
     disable?: boolean;
     hideOnClick?: boolean;
+    portal?: string;
 }
 
 export class Tooltip extends React.Component<ITooltipProps, {}> {
@@ -62,15 +63,17 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
     showTooltip() {
         if (this.props.disable === true) return;
         
-        const { content, disable } = this.props;
+        const { content } = this.props;
 
+        const portalId = isOr(this.props.portal, 'tooltips');
         const position = isOr(this.props.position, 'bottom');
         const id = this.tooltipId;
         const tipClassName = classNames('mp-tooltip', tipArrowClassName(position));
         const tip = <div className={tipClassName}>{ content }</div>;
 
-        popovers.open({
+        popovers.show({
             id,
+            portal: portalId,
             component: (
                 <TooltipPositioner target={this.childRef} position={position}>
                     { tip }
@@ -81,7 +84,7 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
 
     closeTooltip() {
         if (popovers.isOpen(this.tooltipId)) {
-            popovers.close(this.tooltipId);
+            popovers.hide(this.tooltipId);
         }
     }
 

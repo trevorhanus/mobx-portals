@@ -5,21 +5,23 @@ import { popovers } from './PopoverStore';
 import { invariant } from './utils';
 
 export interface IPopoversPortalProps {
-
+    externalId: string;
 }
 
 type OpenableStatelessComponent = React.StatelessComponent<{close?: (data: any) => void}>;
 
-export const PopoversPortal = observer((props: IPopoversPortalProps) => {
-    const portal = getPortalElement();
+export const ExternalPortal = observer((props: IPopoversPortalProps) => {
+    const thisPortalId = props.externalId;
+    const portal = getPortalElement(thisPortalId);
 
     return (ReactDOM as any).createPortal(
         popovers.renderedPopovers.map(popover => {
-            const { id, component, onClose } = popover;
+            const { id, component, hide, externalId } = popover;
+            if (externalId == null || externalId !== thisPortalId) return null;
 
             const props = {
                 key: id,
-                close: onClose,
+                hide: hide,
             };
 
             if (typeof component === 'string') {
@@ -38,10 +40,10 @@ export const PopoversPortal = observer((props: IPopoversPortalProps) => {
 
 let portalDiv: HTMLElement;
 
-function getPortalElement(): HTMLElement {
+function getPortalElement(id: string): HTMLElement {
     if (portalDiv == null) {
-        const el = document.getElementById('popovers-portal');
-        invariant(el == null, 'Could not find div for popovers portal');
+        const el = document.getElementById(id);
+        invariant(el == null, `could not find node with id '${id}'`);
         portalDiv = el;
     }
 
