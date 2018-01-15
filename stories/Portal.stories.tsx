@@ -109,4 +109,41 @@ storiesOf('Portal', module)
                 <button onClick={showModal}>Show Modal (external)</button>
             </div>
         );
+    })
+
+    .add('add style and className to portal', () => {
+        const Modal = (props: {hide?: () => void}) => {
+            return (
+                <div>
+                    <button onClick={props.hide}>Hide</button>
+                    With this one, you can hide it by clicking the button.
+                </div>
+            )
+        };
+
+        const showModal = () => {
+            popovers.show({
+                id: 'myModal',
+                portal: 'right-portal',
+                component: <Modal />
+            });
+        };
+
+        return (
+            <div>
+                <Portal
+                    id="right-portal"
+                    className="portal"
+                    style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        width: '300px',
+                        height: '300px',
+                        backgroundColor: '#4bb4ff',
+                    }}
+                />
+                <button onClick={showModal}>Show Modal in Portal</button>
+            </div>
+        );
     });

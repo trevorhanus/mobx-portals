@@ -7,6 +7,8 @@ import { ExternalPortal } from './ExternalPortal';
 export interface IPortalProps {
     id?: string;
     toExternalId?: string;
+    style?: React.CSSProperties;
+    className?: string;
 }
 
 type OpenableStatelessComponent = React.StatelessComponent<{close?: (data: any) => void}>;
@@ -18,7 +20,11 @@ export const Portal = observer((props: IPortalProps) => {
     const portalId = props.id != null ? props.id : 'default';
 
     return (
-        <div id={portalId}>
+        <div
+            id={portalId}
+            className={props.className}
+            style={props.style}
+        >
             {
                 popovers.renderedPopovers.map(popover => {
                     const { id, portal, component, hide } = popover;
