@@ -46,8 +46,10 @@ export class PopoverStore implements IPopoversStore {
 
     @action
     hide(id: string, data?: any) {
-        const popover = this._openPopovers.get(id);
-        popover.hide(data);
+        if (this.isOpen(id)) {
+            const popover = this._openPopovers.get(id);
+            popover.hide(data);
+        }
     }
 
     @action
