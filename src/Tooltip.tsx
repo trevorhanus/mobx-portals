@@ -55,8 +55,10 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
             onClick: this.handleClick.bind(this),
         };
 
+        const onlyChild = React.Children.only(children) as React.ReactElement;
+
         return (
-            React.cloneElement(React.Children.only(children), childProps)
+            React.cloneElement(onlyChild, childProps)
         );
     }
 
@@ -94,7 +96,7 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
             this.closeTooltip();
         }
         // need to call the onClick handler on the children
-        const child = React.Children.only(this.props.children);
+        const child = React.Children.only(this.props.children) as React.ReactElement;
         const onClick = child.props.onClick;
         if (onClick != null) {
             onClick(e);
