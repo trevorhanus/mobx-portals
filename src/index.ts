@@ -1,4 +1,4 @@
-import { popovers as portals } from './PopoverStore';
+import { portals as portals } from './Portals';
 import { Portal } from './Portal';
 import { Tooltip } from './Tooltip';
 

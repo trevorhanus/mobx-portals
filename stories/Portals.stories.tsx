@@ -1,7 +1,7 @@
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
-import { popovers } from '../src/PopoverStore';
+import { portals } from '../src/Portals';
 import { Portal } from '../src/Portal';
 
 import './style.scss';
@@ -15,40 +15,40 @@ if (node == null) {
     document.body.appendChild(div);
 }
 
-storiesOf('Portal', module)
+storiesOf('Portals', module)
 
     .add('Named Portal', () => {
         const showModal = () => {
-            popovers.show({
+            portals.render({
                 id: 'myModal',
-                portal: 'my-portal',
+                portalKey: 'my-portal',
                 component: <div>Hi, I'm the modal!</div>
             });
         };
 
         const hideModal = () => {
-            popovers.hide('myModal');
+            portals.unmount('myModal');
         };
 
         return (
             <div>
                 <button onClick={showModal}>Show Modal</button>
                 <button onClick={hideModal}>Hide Modal</button>
-                <Portal id="my-portal" />
+                <Portal portalKey="my-portal" />
             </div>
         );
     })
 
     .add('Default Portal', () => {
         const showModal = () => {
-            popovers.show({
+            portals.render({
                 id: 'myModal',
                 component: <div>Hi, I'm the modal!</div>
             });
         };
 
         const hideModal = () => {
-            popovers.hide('myModal');
+            portals.unmount('myModal');
         };
 
         return (
@@ -61,17 +61,17 @@ storiesOf('Portal', module)
     })
 
     .add('Hide from ported component', () => {
-        const Modal = (props: {hide?: () => void}) => {
+        const Modal = (props: { unmount?: () => void }) => {
             return (
                 <div>
-                    <button onClick={props.hide}>Hide</button>
+                    <button onClick={props.unmount}>Hide</button>
                     With this one, you can hide it by clicking the button.
                 </div>
             )
         };
 
         const showModal = () => {
-            popovers.show({
+            portals.render({
                 id: 'myModal',
                 component: <Modal />
             });
@@ -86,45 +86,45 @@ storiesOf('Portal', module)
     })
 
     .add('to external node', () => {
-        const Modal = (props: {hide?: () => void}) => {
+        const Modal = (props: {unmount?: () => void}) => {
             return (
                 <div>
-                    <button onClick={props.hide}>Hide</button>
+                    <button onClick={props.unmount}>Hide</button>
                     With this one, you can hide it by clicking the button.
                 </div>
             )
         };
 
         const showModal = () => {
-            popovers.show({
+            portals.render({
                 id: 'myModal',
-                externalId: EXTERNAL_PORTAL_ID,
+                portalKey: 'external_portal',
                 component: <Modal />
             });
         };
 
         return (
             <div>
-                <Portal toExternalId={EXTERNAL_PORTAL_ID}/>
+                <Portal portalKey="external_portal" toExternalId={EXTERNAL_PORTAL_ID}/>
                 <button onClick={showModal}>Show Modal (external)</button>
             </div>
         );
     })
 
     .add('add style and className to portal', () => {
-        const Modal = (props: {hide?: () => void}) => {
+        const Modal = (props: {unmount?: () => void}) => {
             return (
                 <div>
-                    <button onClick={props.hide}>Hide</button>
+                    <button onClick={props.unmount}>Hide</button>
                     With this one, you can hide it by clicking the button.
                 </div>
             )
         };
 
         const showModal = () => {
-            popovers.show({
+            portals.render({
                 id: 'myModal',
-                portal: 'right-portal',
+                portalKey: 'right-portal',
                 component: <Modal />
             });
         };
@@ -132,7 +132,7 @@ storiesOf('Portal', module)
         return (
             <div>
                 <Portal
-                    id="right-portal"
+                    portalKey="right-portal"
                     className="portal"
                     style={{
                         position: 'absolute',

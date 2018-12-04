@@ -1,60 +1,59 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { popovers } from './PopoverStore';
-import { ReactElement } from 'react';
-import { ExternalPortal } from './ExternalPortal';
+import * as ReactDOM from 'react-dom';
+import { portals } from './Portals';
+import { cloneElementWithProps, invariant } from './utils';
 
 export interface IPortalProps {
-    id?: string;
+    portalKey?: string;
     toExternalId?: string;
     style?: React.CSSProperties;
     className?: string;
 }
 
-type OpenableStatelessComponent = React.StatelessComponent<{close?: (data: any) => void}>;
-
 export const Portal = observer((props: IPortalProps) => {
+    const portalKey = props.portalKey || 'default';
+
     if (props.toExternalId != null) {
-        return <ExternalPortal externalId={props.toExternalId} />
+        const portal = getPortalElement(props.toExternalId);
+        return (ReactDOM as any).createPortal(
+            renderPortedComponents(portalKey),
+            portal,
+        );
     }
-    const portalId = props.id != null ? props.id : 'default';
 
     return (
         <div
-            id={portalId}
+            id={portalKey}
             className={props.className}
             style={props.style}
         >
-            {
-                popovers.renderedPopovers.map(popover => {
-                    const { id, portal, component, hide } = popover;
-
-                    if (portal !== portalId) return null;
-
-                    const props = {
-                        key: id,
-                        hide: hide,
-                    };
-
-                    if (isDOMTypeElement(component)) {
-                        return React.cloneElement(component as ReactElement<any>, {key: id});
-                    } else if ((component as any).prototype && (component as any).prototype.render == null) {
-                        const StatelessComp = component as OpenableStatelessComponent;
-                        return <StatelessComp {...props} />;
-                    } else {
-                        const c = component as React.ReactElement<any>;
-                        return React.cloneElement(c, props);
-                    }
-                })
-            }
+            { renderPortedComponents(portalKey) }
         </div>
     )
 });
 
-function isElement(element) {
-    return React.isValidElement(element);
+function renderPortedComponents(portalKey: string): any {
+    return portals.portedComponents.map(ported => {
+        const { id, component, unmount } = ported;
+
+        if (portalKey !== ported.portalKey) return null;
+
+        const props = {
+            key: id,
+            unmount,
+        };
+
+        return cloneElementWithProps(component, props);
+    })
 }
 
-function isDOMTypeElement(element) {
-    return isElement(element) && typeof element.type === 'string';
+let portalDiv: HTMLElement;
+function getPortalElement(id: string): HTMLElement {
+    if (portalDiv == null) {
+        const el = document.getElementById(id);
+        invariant(el == null, `could not find node with id '${id}'`);
+        portalDiv = el;
+    }
+    return portalDiv;
 }

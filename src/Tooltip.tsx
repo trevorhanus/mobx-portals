@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { popovers, IPopoverProps } from './PopoverStore';
+import { portals, IPopoverProps } from './Portals';
 import { warn } from './utils';
 import { TooltipPositioner } from './TooltipPositioner';
 import * as classNames from 'classnames';
@@ -71,9 +71,9 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
         const tipClassName = classNames('mp-tooltip', tipArrowClassName(position));
         const tip = <div className={tipClassName}>{ content }</div>;
 
-        popovers.show({
+        portals.render({
             id,
-            portal: portalId,
+            portalKey: portalId,
             component: (
                 <TooltipPositioner target={this.childRef} position={position}>
                     { tip }
@@ -83,8 +83,8 @@ export class Tooltip extends React.Component<ITooltipProps, {}> {
     }
 
     closeTooltip() {
-        if (popovers.isOpen(this.tooltipId)) {
-            popovers.hide(this.tooltipId);
+        if (portals.isOpen(this.tooltipId)) {
+            portals.unmount(this.tooltipId);
         }
     }
 
