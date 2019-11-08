@@ -5,22 +5,18 @@
         "removeComments": true,
         "experimentalDecorators": true,
         "preserveConstEnums": true,
+        "outDir": "./dist",
+        "sourceMap": true,
         "pretty": true,
+        "declaration": true,
         "jsx": "react",
-        "outDir": "build",
         "lib": [
             "dom",
-            "es2015",
-            "es2015.collection",
-            "es2015.promise"
-        ],
-        "typeRoots": [
-            "../node_modules/@types"
+            "esnext"
         ]
     },
     "include": [
-        "src/**/*",
-        "stories/**/*"
+        "src/index.ts"
     ],
     "exclude": [
         "node_modules"

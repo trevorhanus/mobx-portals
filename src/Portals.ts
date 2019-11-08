@@ -1,7 +1,6 @@
 import { action, computed, observable, ObservableMap } from 'mobx';
 import * as React from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { warn } from './utils';
+import { generateId, warn } from './utils';
 
 export interface IPopoverProps {
     children?: React.ReactNode;
@@ -27,15 +26,15 @@ export interface IPortedComponent {
 }
 
 export class Portals {
-    @observable private _portedComponents: ObservableMap<IPortedComponent>;
+    @observable private _portedComponents: ObservableMap<string, IPortedComponent>;
 
     constructor() {
-        this._portedComponents = observable.map<IPortedComponent>();
+        this._portedComponents = observable.map<string, IPortedComponent>();
     }
 
     @computed
     get portedComponents(): IPortedComponent[] {
-        return this._portedComponents.values();
+        return Array.from(this._portedComponents.values());
     }
 
     isOpen(id: string): boolean {
@@ -44,7 +43,7 @@ export class Portals {
 
     @action
     render(opts: IRenderOptions): IRenderResponse {
-        const id = opts.id != null ? opts.id : uuidv4();
+        const id = opts.id != null ? opts.id : generateId();
         const portalKey = opts.portalKey != null ? opts.portalKey : 'default';
 
         if (this._portedComponents.has(id)) {

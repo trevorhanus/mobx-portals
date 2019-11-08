@@ -12,12 +12,16 @@ export function invariant(check: boolean, message: (string | MessageFunc)) {
     }
 }
 
+function isFunc(sub: any): sub is Function {
+    return typeof sub === 'function';
+}
+
 export type orCallback = () => any;
 export function isOr<T>(isVal: T | undefined, orVal: T | orCallback): T {
     if (isVal != null) {
         return isVal;
     } else {
-        return typeof orVal === 'function' ? orVal() : orVal;
+        return isFunc(orVal) ? orVal() : orVal;
     }
 }
 
@@ -51,4 +55,26 @@ export function cloneElementWithProps(el: React.ReactNode, props: any): any {
 
 export function isDomElement(el: any): boolean {
     return el.type != null && typeof el.type === 'string';
+}
+
+export const canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+/**
+ * generateId(): string
+ *
+ * Generates a locally unique id. stores a map of seen ids to ensure they are unique.
+ * These are not guaranteed to be unique globally
+ *
+ */
+
+const seenIds: { [id: string]: boolean } = {};
+const MULTIPLIER = Math.pow(2, 24);
+
+export function generateId(): string {
+    let id = null;
+    while (id == null || seenIds.hasOwnProperty(id) || !isNaN(+id)) { // !isNaN() just making sure it's not a number
+        id = Math.floor(Math.random() * MULTIPLIER).toString(32);
+    }
+    seenIds[id] = true;
+    return id;
 }
