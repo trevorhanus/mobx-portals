@@ -31,7 +31,7 @@ A mobx-react library for managing popovers. A popover is any element that appear
 
 ## Usage
 
-First, somewhere in your React tree, you must render a `Portal` component. You can render any number of portals in your tree. You will reference your portals by their `handle` later.
+First, somewhere in your React tree, you must render a `Portal` component. You can render any number of portals in your tree. You will reference your portals by their `portalKey` later.
 
 ```ts
 import { Portal } from 'mobx-portals';
@@ -41,7 +41,7 @@ class App extends React.Component<{}, {}> {
     render() {
         return (
             <div>
-                <Portal handle="my-portal" />
+                <Portal portalKey="my-portal" />
             </div>
         );
     }
@@ -56,7 +56,7 @@ import { MyModal } from './MyModal';
 
 const res = portals.render({
     id: 'myModal',
-    portalHandle: 'my-portal',
+    portalKey: 'my-portal',
     component: MyModal,
 });
 ```
@@ -93,7 +93,7 @@ import { MyModal } from './MyModal';
 
 const res = portals.render({
     id: 'myModal',
-    portalHandle: 'my-portal',
+    portalKey: 'my-portal',
     component: MyModal,
 });
 
